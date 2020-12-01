@@ -1,0 +1,24 @@
+*.pyc
+*~
+/media/*
+/static/
+/locale/
+/logs/*
+/venv/
+
+# IDE Projects
+/.vscode/
+/.idea/
+*.sublime-project
+*.sublime-workspace
+.project
+.pydevproject
+
+# Installation-specific
+.env
+
+# testing related files
+.coverage
+
+db.local
+db.sqlite3
