@@ -1,21 +1,34 @@
-from django.contrib.auth.views import LoginView
-from django.contrib.auth import login, authenticate
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, FormView, TemplateView
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse, reverse_lazy
 
 
 class AccountLoginView(LoginView):
     template_name = 'common/login.html'
 
-    def get_context_data(self, **kwargs):
-        context = super(AccountLoginView, self).get_context_data(**kwargs)
-        context.update({
-            'name': 'Login'
-        })
-        return context
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return HttpResponseRedirect('/home')
+        else:
+            return super(AccountLoginView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        username = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=password)
+
+        if user is not None:
+            if user.is_active:
+                login(self.request, user)
+                return HttpResponseRedirect('/home')
+            else:
+                return HttpResponse("Inactive user.")
+        else:
+            return HttpResponseRedirect('/login')
 
 
 class AccountSignup(FormView):
@@ -39,3 +52,11 @@ class AccountSignup(FormView):
 
 class Home(TemplateView):
     template_name = 'common/home.html'
+
+
+class Logout(LogoutView):
+
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return HttpResponseRedirect('/login')
+
