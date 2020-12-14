@@ -12,7 +12,7 @@ class AccountLoginView(LoginView):
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return HttpResponseRedirect('/home')
+            return HttpResponseRedirect(reverse('home'))
         else:
             return super(AccountLoginView, self).dispatch(request, *args, **kwargs)
 
@@ -20,15 +20,11 @@ class AccountLoginView(LoginView):
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
         user = authenticate(username=username, password=password)
+        login(self.request, user)
+        return HttpResponseRedirect(reverse('home'))
 
-        if user is not None:
-            if user.is_active:
-                login(self.request, user)
-                return HttpResponseRedirect('/home')
-            else:
-                return HttpResponse("Inactive user.")
-        else:
-            return HttpResponseRedirect('/login')
+    def form_invalid(self, form):
+        return super(AccountLoginView, self).form_invalid(form)
 
 
 class AccountSignup(FormView):
@@ -58,5 +54,4 @@ class Logout(LogoutView):
 
     def get(self, request, *args, **kwargs):
         logout(request)
-        return HttpResponseRedirect('/login')
-
+        return HttpResponseRedirect(reverse('login'))
