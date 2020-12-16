@@ -1,5 +1,5 @@
 from django.db import transaction
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
@@ -31,7 +31,7 @@ class AccountLoginView(LoginView):
 class AccountSignup(FormView):
     form_class = RegisterForm
     template_name = 'common/signup.html'
-    success_url = '/home'
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
         with transaction.atomic():
