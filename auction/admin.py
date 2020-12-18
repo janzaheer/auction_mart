@@ -31,7 +31,9 @@ class AttachmentAdmin(admin.ModelAdmin):
 
 
 class CompanyUserAdmin(admin.ModelAdmin):
-    raw_id_fields = ('user',)
+    list_display = ('user', 'company')
+    search_fields = ('user__username',)
+    raw_id_fields = ('user', 'company')
 
 
 admin.site.register(Auction, AuctionAdmin)

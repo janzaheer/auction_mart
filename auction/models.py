@@ -20,6 +20,9 @@ class CompanyUser(DatedModel):
         related_name='user_company', on_delete=models.SET_NULL
     )
 
+    def __str__(self):
+        return self.user.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=150)

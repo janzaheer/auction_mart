@@ -34,6 +34,9 @@ class AccountSignup(FormView):
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
+        """
+        Would register user along with company
+        """
         with transaction.atomic():
             form.save()
             username = self.request.POST['username']
@@ -52,7 +55,7 @@ class AccountSignup(FormView):
             # authenticate user then login
             user = authenticate(username=username, password=password)
             login(self.request, user)
-            return super(AccountSignup, self).form_valid(form)
+        return super(AccountSignup, self).form_valid(form)
 
     def form_invalid(self, form):
         return super(AccountSignup, self).form_invalid(form)
