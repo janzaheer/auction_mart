@@ -1,10 +1,11 @@
+from django.db import transaction
+from django.urls import reverse, reverse_lazy
+from django.http import HttpResponseRedirect
+from django.views.generic import FormView, TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login, authenticate, logout
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from django.views.generic import ListView, FormView, TemplateView
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse, reverse_lazy
+from common.forms import RegisterForm
+from auction.forms import CompanyForm
 
 
 class AccountLoginView(LoginView):
@@ -28,19 +29,33 @@ class AccountLoginView(LoginView):
 
 
 class AccountSignup(FormView):
-    form_class = UserCreationForm
+    form_class = RegisterForm
     template_name = 'common/signup.html'
-    success_url = '/home'
+    success_url = reverse_lazy('home')
 
     def form_valid(self, form):
-        form.save()
+        """
+        Would register user along with company
+        """
+        with transaction.atomic():
+            form.save()
+            username = self.request.POST['username']
+            password = self.request.POST['password1']
 
-        username = self.request.POST['username']
-        password = self.request.POST['password1']
-        # authenticate user then login
-        user = authenticate(username=username, password=password)
-        login(self.request, user)
-        return HttpResponseRedirect(self.success_url)
+            company_name = form.cleaned_data.get('company_name')
+            company_address = form.cleaned_data.get('company_address')
+            company_kwargs = {
+                'name': company_name,
+                'address': company_address,
+            }
+            company_form = CompanyForm(company_kwargs)
+            if company_form.is_valid():
+                company_form.save()
+
+            # authenticate user then login
+            user = authenticate(username=username, password=password)
+            login(self.request, user)
+        return super(AccountSignup, self).form_valid(form)
 
     def form_invalid(self, form):
         return super(AccountSignup, self).form_invalid(form)

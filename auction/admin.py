@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from .models import (
-    Auction, Product, Category, Company, Attachment, )
+    Auction, Product, Category, Company, Attachment, CompanyUser)
 
 
 class AuctionAdmin(admin.ModelAdmin):
@@ -30,8 +30,15 @@ class AttachmentAdmin(admin.ModelAdmin):
     list_display = ('image', 'status', )
 
 
+class CompanyUserAdmin(admin.ModelAdmin):
+    list_display = ('user', 'company')
+    search_fields = ('user__username',)
+    raw_id_fields = ('user', 'company')
+
+
 admin.site.register(Auction, AuctionAdmin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Company, CompanyAdmin)
 admin.site.register(Attachment, AttachmentAdmin)
+admin.site.register(CompanyUser, CompanyUserAdmin)
