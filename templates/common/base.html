@@ -101,7 +101,7 @@
 						</ul>
 						<ul class="navbar-nav ml-auto mt-10">
 							<li class="nav-item">
-								<a class="nav-link login-button" href="login.html">Login</a>
+								<a class="nav-link login-button" href="/login">Login</a>
 							</li>
 							<li class="nav-item">
 								<a class="nav-link text-white add-button" href="ad-listing.html"><i class="fa fa-plus-circle"></i> Add Listing</a>
@@ -115,13 +115,9 @@
 </section>
 
 <section class="login py-5 border-top-1">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-5 col-md-8 align-item-center">
-                {% block content %}
-                {% endblock %}
-            </div>
-        </div>
+
+        {% block content %}
+        {% endblock %}
     </div>
 </section>
 
