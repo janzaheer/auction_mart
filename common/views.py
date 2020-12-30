@@ -4,11 +4,12 @@ from django.http import HttpResponseRedirect
 from django.views.generic import FormView, TemplateView
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth import login, authenticate, logout
-from common.forms import RegisterForm
+from common.forms import RegisterForm, LoginForm
 from auction.forms import CompanyForm
 
 
 class AccountLoginView(LoginView):
+    form_class = LoginForm
     template_name = 'common/login.html'
 
     def dispatch(self, request, *args, **kwargs):
